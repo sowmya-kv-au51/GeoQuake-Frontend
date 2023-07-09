@@ -1,25 +1,36 @@
-import logo from './logo.svg';
+import axios from "axios";
+import React, { useState } from "react";
+import { MapContainer, Marker, TileLayer, Tooltip } from 'react-leaflet';
 import './App.css';
 
-function App() {
+export default function App() {
+  const [geoQuake, setGeoQuake] = useState([]);
+
+  React.useEffect(() => {
+    axios.get("https://geoquake-backend.onrender.com").then((response) => {
+      setGeoQuake(response.data)
+    });
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <MapContainer center={[-7.17, 129.62]} zoom={5} id="map">
+      <TileLayer
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+      />
+      {geoQuake.map((geodata, index) => {
+        return (
+          <Marker
+            key={index}
+            position={[geodata.latitude,
+            geodata.longitude]}
+          >
+            <Tooltip>{geodata.region} (Magnitude: {geodata.magnitude})</Tooltip>
+          </Marker>
+        )
+      })}
+    </MapContainer>
   );
 }
 
-export default App;
+
