@@ -7,7 +7,7 @@ export default function App() {
   const [geoQuake, setGeoQuake] = useState([]);
 
   React.useEffect(() => {
-    axios.get("https://geoquake-backend.onrender.com").then((response) => {
+    axios.get("https://geoquake-backend.onrender.com/geodata").then((response) => {
       setGeoQuake(response.data)
     });
   }, [])
